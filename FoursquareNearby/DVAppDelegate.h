@@ -8,12 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@class DVViewController;
-
 @interface DVAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-
-@property (strong, nonatomic) DVViewController *viewController;
 
 @end

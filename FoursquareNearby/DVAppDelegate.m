@@ -8,7 +8,7 @@
 
 #import "DVAppDelegate.h"
 
-#import "DVViewController.h"
+#import "DVFoursquareNearbyViewController.h"
 
 @implementation DVAppDelegate
 
@@ -16,8 +16,10 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    self.viewController = [[DVViewController alloc] initWithNibName:@"DVViewController" bundle:nil];
-    self.window.rootViewController = self.viewController;
+    DVFoursquareNearbyViewController *viewController = [[DVFoursquareNearbyViewController alloc] init];
+    UINavigationController *navigationControlle = [[UINavigationController alloc] initWithRootViewController:viewController];
+    
+    self.window.rootViewController = navigationControlle;
     [self.window makeKeyAndVisible];
     return YES;
 }

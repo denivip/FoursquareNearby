@@ -1,5 +1,5 @@
 //
-//  DVViewController.h
+//  DVFoursquareNearbyViewController.h
 //  FoursquareNearby
 //
 //  Created by Ilya Puchka on 23.11.12.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DVViewController : UIViewController
+@interface DVFoursquareNearbyViewController : UITableViewController
 
 @end
