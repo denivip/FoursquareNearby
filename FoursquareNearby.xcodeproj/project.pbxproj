@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0906D4F5165F9E5E00F4DA0B /* poweredByFoursquare_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 0906D4F4165F9E5E00F4DA0B /* poweredByFoursquare_gray.png */; };
 		0923F135165F5EAB0025D4A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0923F134165F5EAB0025D4A9 /* UIKit.framework */; };
 		0923F137165F5EAB0025D4A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0923F136165F5EAB0025D4A9 /* Foundation.framework */; };
 		0923F139165F5EAB0025D4A9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0923F138165F5EAB0025D4A9 /* CoreGraphics.framework */; };
@@ -30,10 +31,11 @@
 		099F6FC8165F677400505A4A /* poweredByFoursquare_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 099F6FC7165F677400505A4A /* poweredByFoursquare_gray@2x.png */; };
 		099F6FCD165F67AB00505A4A /* DVFoursquareNearbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 099F6FCB165F67AB00505A4A /* DVFoursquareNearbyViewController.m */; };
 		099F6FCE165F67AB00505A4A /* DVFoursquareNearbyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 099F6FCC165F67AB00505A4A /* DVFoursquareNearbyViewController.xib */; };
-		099F6FD2165F6E1800505A4A /* poweredByFoursquare_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 099F6FD1165F6E1800505A4A /* poweredByFoursquare_gray.png */; };
+		099F6FD5165F86E400505A4A /* DVFoursquareClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 099F6FD4165F86E400505A4A /* DVFoursquareClient.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0906D4F4165F9E5E00F4DA0B /* poweredByFoursquare_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = poweredByFoursquare_gray.png; sourceTree = "<group>"; };
 		0923F130165F5EAB0025D4A9 /* FoursquareNearby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoursquareNearby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0923F134165F5EAB0025D4A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0923F136165F5EAB0025D4A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -72,7 +74,8 @@
 		099F6FCA165F67AB00505A4A /* DVFoursquareNearbyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVFoursquareNearbyViewController.h; sourceTree = "<group>"; };
 		099F6FCB165F67AB00505A4A /* DVFoursquareNearbyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVFoursquareNearbyViewController.m; sourceTree = "<group>"; };
 		099F6FCC165F67AB00505A4A /* DVFoursquareNearbyViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DVFoursquareNearbyViewController.xib; sourceTree = "<group>"; };
-		099F6FD1165F6E1800505A4A /* poweredByFoursquare_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = poweredByFoursquare_gray.png; sourceTree = "<group>"; };
+		099F6FD3165F86E400505A4A /* DVFoursquareClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVFoursquareClient.h; sourceTree = "<group>"; };
+		099F6FD4165F86E400505A4A /* DVFoursquareClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVFoursquareClient.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +132,8 @@
 				099F6FCA165F67AB00505A4A /* DVFoursquareNearbyViewController.h */,
 				099F6FCB165F67AB00505A4A /* DVFoursquareNearbyViewController.m */,
 				099F6FCC165F67AB00505A4A /* DVFoursquareNearbyViewController.xib */,
+				099F6FD3165F86E400505A4A /* DVFoursquareClient.h */,
+				099F6FD4165F86E400505A4A /* DVFoursquareClient.m */,
 				0923F13B165F5EAB0025D4A9 /* Supporting Files */,
 			);
 			path = FoursquareNearby;
@@ -144,7 +149,7 @@
 				0923F146165F5EAB0025D4A9 /* Default.png */,
 				0923F148165F5EAB0025D4A9 /* Default@2x.png */,
 				0923F14A165F5EAB0025D4A9 /* Default-568h@2x.png */,
-				099F6FD1165F6E1800505A4A /* poweredByFoursquare_gray.png */,
+				0906D4F4165F9E5E00F4DA0B /* poweredByFoursquare_gray.png */,
 				099F6FC7165F677400505A4A /* poweredByFoursquare_gray@2x.png */,
 			);
 			name = "Supporting Files";
@@ -235,7 +240,7 @@
 				0923F14B165F5EAB0025D4A9 /* Default-568h@2x.png in Resources */,
 				099F6FC8165F677400505A4A /* poweredByFoursquare_gray@2x.png in Resources */,
 				099F6FCE165F67AB00505A4A /* DVFoursquareNearbyViewController.xib in Resources */,
-				099F6FD2165F6E1800505A4A /* poweredByFoursquare_gray.png in Resources */,
+				0906D4F5165F9E5E00F4DA0B /* poweredByFoursquare_gray.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +263,7 @@
 				0923F1E4165F63A60025D4A9 /* AFXMLRequestOperation.m in Sources */,
 				0923F1E5165F63A60025D4A9 /* UIImageView+AFNetworking.m in Sources */,
 				099F6FCD165F67AB00505A4A /* DVFoursquareNearbyViewController.m in Sources */,
+				099F6FD5165F86E400505A4A /* DVFoursquareClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

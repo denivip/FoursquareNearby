@@ -10,7 +10,8 @@
 
 @interface DVFoursquareNearbyViewController : UITableViewController
 
-//@property (nonatomic, strong) IBOutlet UISearchDisplayController *searchDisplayController;
-//@property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
+@property (nonatomic, copy) NSString *initialSearchQuery;
+@property (nonatomic) BOOL searchEnabled;
+@property (nonatomic) BOOL refreshEnabled;
 
 @end
