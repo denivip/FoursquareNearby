@@ -7,19 +7,32 @@
 //
 
 #import "DVFoursquareNearbyViewController.h"
-#import "DVFoursquareClient.h"
+#import "DVFoursquareCreatePlaceViewController.h"
+#import "UIImageView+AFNetworking.h"
 
 @interface DVFoursquareNearbyViewController () <UISearchDisplayDelegate>
 
-@property (nonatomic, strong) NSArray *venues;
-@property (nonatomic, strong) UIBarButtonItem *activityBarButtonItem;
-@property (nonatomic, strong) UIBarButtonItem *refreshBarButtonItem;
+@property (nonatomic, strong) DVFoursquareClient *foursquareClient;
+@property (nonatomic, strong) NSArray *items;
 
 @end
 
 @implementation DVFoursquareNearbyViewController
 
-@synthesize venues = _venues;
+@synthesize items = _venues;
+@synthesize initialSearchQuery = _initialSearchQuery;
+@synthesize searchEnabled = _searchEnabled;
+@synthesize refreshEnabled = _refreshEnabled;
+@synthesize activityBarButtonItem = _activityBarButtonItem;
+@synthesize refreshBarButtonItem = _refreshBarButtonItem;
+
+- (DVFoursquareClient *)foursquareClient
+{
+    if (!_foursquareClient) {
+        _foursquareClient = [DVFoursquareClient sharedClient];
+    }
+    return _foursquareClient;
+}
 
 - (UIBarButtonItem *)activityBarButtonItem
 {
@@ -36,7 +49,7 @@
 - (UIBarButtonItem *)refreshBarButtonItem
 {
     if (!_refreshBarButtonItem) {
-        _refreshBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLocations:)];
+        _refreshBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshData:)];
     }
     return _refreshBarButtonItem;
 }
@@ -67,7 +80,7 @@
     return self;
 }
 
-- (void)setVenues:(NSArray *)venues
+- (void)setItems:(NSArray *)venues
 {
     _venues = venues;
 
@@ -117,10 +130,10 @@
     
     if (self.initialSearchQuery &&
         ![self.initialSearchQuery isEqual:@""]) {
-        [self refreshLocationsWithQuery:self.initialSearchQuery];
+        [self refreshDataWithQuery:self.initialSearchQuery];
     }
     else {
-        [self refreshLocations:nil];
+        [self refreshData:nil];
     }
 }
 
@@ -132,7 +145,7 @@
         return 2;
     }
     else {
-        return self.venues.count;
+        return self.items.count;
     }
 }
 
@@ -165,10 +178,19 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
         }
         
-        NSDictionary *venue = self.venues[indexPath.row];
+        NSDictionary *venue = self.items[indexPath.row];
         
         cell.textLabel.text = venue[@"name"];
         cell.detailTextLabel.text = venue[@"location"][@"address"];
+        
+        if ([venue[@"categories"] lastObject][@"icon"]) {
+            cell.imageView.image = [UIImage imageNamed:@"category_placeholder"];
+        }
+        
+        [[AFImageRequestOperation imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[venue[@"categories"] lastObject][@"icon"]]] success:^(UIImage *image) {
+            cell.imageView.image = image;
+            [cell setNeedsLayout];
+        }] start];
         
         return cell;
     }
@@ -180,13 +202,17 @@
 {
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         switch (indexPath.row) {
-            case 0:
+            case 0: {
+                DVFoursquareCreatePlaceViewController *createPlaceViewControlle = [[DVFoursquareCreatePlaceViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                [self.navigationController pushViewController:createPlaceViewControlle animated:YES];
+            }
                 break;
             case 1: {
                 DVFoursquareNearbyViewController *foursquareNearbyViewController = [[DVFoursquareNearbyViewController alloc] initWithNibName:@"DVFoursquareNearbyViewController" bundle:nil];
                 foursquareNearbyViewController.initialSearchQuery = self.searchDisplayController.searchBar.text;
                 foursquareNearbyViewController.searchEnabled = NO;
                 foursquareNearbyViewController.refreshEnabled = NO;
+                foursquareNearbyViewController.title = @"Nearby";
                 [self.navigationController pushViewController:foursquareNearbyViewController animated:YES];
             }
                 break;
@@ -194,28 +220,28 @@
     }
 }
 
-- (void)refreshLocations:(id)sender
+- (void)refreshData:(id)sender
 {
     if (self.initialSearchQuery) {
-        [self refreshLocationsWithQuery:self.initialSearchQuery];
+        [self refreshDataWithQuery:self.initialSearchQuery];
         return;
     }
     
-    self.venues = @[];
+    self.items = @[];
     
     if (self.refreshEnabled) {
         self.navigationItem.rightBarButtonItem = self.activityBarButtonItem;
     }
     
-    [[DVFoursquareClient sharedClient] nearbyPlacesForLocation:CGPointZero
-                                                  onCompletion:^(NSArray *venues, NSError *error) {
+    [self.foursquareClient nearbyPlacesForLocation:CGPointZero
+                                      onCompletion:^(NSArray *venues, NSError *error) {
         
         if (self.refreshEnabled) {
             self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
         }
 
         if (venues && !error) {
-            self.venues = venues;
+            self.items = venues;
         }
         else if (error) {
             NSLog(@"Error while fetching nearby venues: %@", error.description);
@@ -224,31 +250,31 @@
     }];
 }
 
-- (void)refreshLocationsWithQuery:(NSString *)query
+- (void)refreshDataWithQuery:(NSString *)query
 {
-    self.venues = @[];
+    self.items = @[];
     
     if (self.refreshEnabled) {
         self.navigationItem.rightBarButtonItem = self.activityBarButtonItem;
     }
     
-    [[DVFoursquareClient sharedClient] searchPlacesWithQuery:query
-                                                   location:CGPointZero
-                                                     radius:0.0f
-                                               onCompletion:^(NSArray *venues, NSError *error) {
+    [self.foursquareClient searchPlacesWithQuery:query
+                                        location:CGPointZero
+                                          radius:0.0f
+                                    onCompletion:^(NSArray *venues, NSError *error) {
                                                    
-                                                   if (self.refreshEnabled) {
-                                                       self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
-                                                   }
-                                                   
-                                                   if (venues && !error) {
-                                                       self.venues = venues;
-                                                   }
-                                                   else if (error) {
-                                                       NSLog(@"Error while fetching nearby venues: %@", error.description);
-                                                   }
+                                           if (self.refreshEnabled) {
+                                               self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
+                                           }
+                                           
+                                           if (venues && !error) {
+                                               self.items = venues;
+                                           }
+                                           else if (error) {
+                                               NSLog(@"Error while fetching nearby venues: %@", error.description);
+                                           }
 
-                                               }];
+                                       }];
 }
 
 - (void)viewDidUnload {

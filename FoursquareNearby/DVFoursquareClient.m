@@ -64,6 +64,28 @@ static NSString *const kBaseURLString = @"https://api.foursquare.com/v2/";
 
 }
 
+- (void)populateCategoriesWithObject:(id)object onCompletion:(DVFoursquareClientCompletionBlock)completion
+{
+    if (![object isKindOfClass:[NSDictionary class]] ||
+        !object[@"response"][@"categories"]) {
+        if (completion) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(nil, [NSError errorWithDomain:@"DVFoursquaerClientErrorDomain" code:0 userInfo:@{NSLocalizedDescriptionKey:@"Invalid response structure"}]);
+            });
+        }
+        return;
+    }
+    
+    NSMutableArray *categories = object[@"response"][@"categories"];
+    
+    if (completion) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            completion(categories, nil);
+        });
+    }
+    
+}
+
 - (NSString *)locationStringFromCGPoint:(CGPoint)location
 {
     return [[NSStringFromCGPoint(location) stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"{ }"]] stringByReplacingOccurrencesOfString:@" " withString:@""];
@@ -143,5 +165,40 @@ static NSString *const kBaseURLString = @"https://api.foursquare.com/v2/";
         }];
     }
 }
+
+- (void)addPlaceWithParameters:(NSDictionary *)parameters onCompletion:(DVFoursquareClientPostRequestCompletionBlock)completion
+{
+    [self postPath:@"venues/add" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+
+        
+        
+        if (completion) completion(YES, nil);
+
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+        if (completion) completion(NO, error);
+
+    }];
+}
+
+- (void)searchCategories:(DVFoursquareClientCompletionBlock)completion
+{
+    NSDictionary *queryParameters = @{
+        @"client_id" : kCLIENTID,
+        @"client_secret" : kCLIENTSECRET,
+    };
+    
+    [self getPath:@"venues/categories" parameters:queryParameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        dispatch_queue_t concurentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_async(concurentQueue, ^{
+            [self populateCategoriesWithObject:responseObject onCompletion:completion];
+        });
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        if (completion) {
+            completion(nil, error);
+        }
+    }];}
 
 @end

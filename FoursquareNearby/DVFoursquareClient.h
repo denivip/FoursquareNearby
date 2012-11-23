@@ -8,7 +8,8 @@
 
 #import "AFHTTPClient.h"
 
-typedef void (^DVFoursquareClientCompletionBlock)(NSArray* venues, NSError *error);
+typedef void (^DVFoursquareClientCompletionBlock)(NSArray* results, NSError *error);
+typedef void (^DVFoursquareClientPostRequestCompletionBlock)(BOOL success, NSError *error);
 
 #define kCLIENTID @"Your Foursquare Client ID"
 #define kCLIENTSECRET @"Your Foursquare Client Secret"
@@ -27,5 +28,10 @@ typedef void (^DVFoursquareClientCompletionBlock)(NSArray* venues, NSError *erro
                     location:(CGPoint)location
                       radius:(CGFloat)radius
                 onCompletion:(DVFoursquareClientCompletionBlock)completion;
+
+- (void)addPlaceWithParameters:(NSDictionary *)parameters 
+                  onCompletion:(DVFoursquareClientPostRequestCompletionBlock)completion;
+
+- (void)searchCategories:(DVFoursquareClientCompletionBlock)completion;
 
 @end
