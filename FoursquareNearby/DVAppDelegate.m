@@ -16,7 +16,7 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    DVFoursquareNearbyViewController *viewController = [[DVFoursquareNearbyViewController alloc] init];
+    DVFoursquareNearbyViewController *viewController = [[DVFoursquareNearbyViewController alloc] initWithNibName:@"DVFoursquareNearbyViewController" bundle:nil];
     UINavigationController *navigationControlle = [[UINavigationController alloc] initWithRootViewController:viewController];
     
     self.window.rootViewController = navigationControlle;

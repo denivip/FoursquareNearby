@@ -8,15 +8,28 @@
 
 #import "DVFoursquareNearbyViewController.h"
 
-@interface DVFoursquareNearbyViewController ()
+@interface DVFoursquareNearbyViewController () <UISearchDisplayDelegate>
 
 @end
 
 @implementation DVFoursquareNearbyViewController
 
+//@synthesize searchDisplayController = __searchDisplayController;
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
+    if (self) {
+        // Custom initialization
+        self.title = @"FoursquareNearby";
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshLocation:)];
+    }
+    return self;
+}
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
         self.title = @"FoursquareNearby";
@@ -34,6 +47,11 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"poweredByFoursquare_gray"]];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.tableView setTableFooterView:imageView];
+    [self.tableView setTableHeaderView:self.searchDisplayController.searchBar];
 }
 
 - (void)didReceiveMemoryWarning
@@ -42,13 +60,12 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+- (void)viewWillAppear:(BOOL)animated
 {
-    // Return the number of sections.
-    return 0;
+    [super viewWillAppear:animated];
 }
+
+#pragma mark - Table view data source
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -87,4 +104,7 @@
     
 }
 
+- (void)viewDidUnload {
+    [super viewDidUnload];
+}
 @end
