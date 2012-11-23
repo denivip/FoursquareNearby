@@ -10,6 +10,7 @@
 #import "DVTextFieldCell.h"
 #import "UIView+FindAndResignFirstResponder.h"
 #import "DVFoursquareCategoriesViewController.h"
+#import "DVFoursquareAuthViewController.h"
 
 typedef enum DVPlaceCreationTableViewCellTags {
     DVTagName,
@@ -24,13 +25,49 @@ typedef enum DVPlaceCreationTableViewCellTags {
     DVTagsCount
 } DVPlaceCreationTableViewCellTag;
 
-@interface DVFoursquareCreatePlaceViewController () <UITextFieldDelegate, DVFoursquareNearbyViewControllerDelegate>
+@interface DVFoursquareCreatePlaceViewController () <UITextFieldDelegate, DVFoursquareNearbyViewControllerDelegate, DVFoursquareAuthViewControllerDelegate>
 
 @property (nonatomic, strong) NSDictionary *selectedCategory;
+@property (nonatomic, strong) DVFoursquareClient *foursquareClient;
+@property (nonatomic, strong) NSMutableDictionary *parameters;
 
 @end
 
 @implementation DVFoursquareCreatePlaceViewController
+
+@synthesize parameters = _parameters;
+
+- (NSMutableDictionary *)parameters
+{
+    if (!_parameters) {
+        _parameters = [@{} mutableCopy];
+    }
+    return _parameters;
+}
+
+@synthesize foursquareClient = _foursquareClient;
+
+- (DVFoursquareClient *)foursquareClient
+{
+    if (!_foursquareClient) {
+        _foursquareClient = [DVFoursquareClient sharedClient];
+    }
+    return _foursquareClient;
+}
+
+@synthesize initialName = _initialName;
+
+- (void)setInitialName:(NSString *)initialName
+{
+    _initialName = [initialName copy];
+    self.parameters[@"name"] = _initialName;
+}
+
+- (void)setSelectedCategory:(NSDictionary *)selectedCategory
+{
+    _selectedCategory = selectedCategory;
+    self.parameters[@"primaryCategoryId"] = selectedCategory[@"id"];
+}
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -41,12 +78,33 @@ typedef enum DVPlaceCreationTableViewCellTags {
     return self;
 }
 
+@synthesize addButton = _addButton;
+
+- (UIButton *)addButton
+{
+    if (!_addButton) {
+        _addButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        _addButton.frame = CGRectMake(0, 0, 150, 44);
+        [_addButton setTitle:@"Add venue" forState:UIControlStateNormal];
+        [_addButton addTarget:self action:@selector(addButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _addButton;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 
     self.tableView.backgroundColor = [UIColor whiteColor];
     self.tableView.backgroundView = nil;
+    
+    UIView *footer = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 80)];
+    footer.backgroundColor = [UIColor clearColor];
+    
+    [footer addSubview:self.addButton];
+    self.addButton.center = CGPointMake(CGRectGetMidX(footer.bounds), CGRectGetMidY(footer.bounds));
+
+    [self.tableView setTableFooterView:footer];
 }
 
 - (void)didReceiveMemoryWarning
@@ -56,6 +114,10 @@ typedef enum DVPlaceCreationTableViewCellTags {
 }
 
 #pragma mark - Table view data source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -141,6 +203,7 @@ typedef enum DVPlaceCreationTableViewCellTags {
             ((DVTextFieldCell*)cell).textField.placeholder = @"Not required";
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
             UILabel *label = [[UILabel alloc] init];
+            label.backgroundColor = [UIColor clearColor];
             label.text = @"@";
             [label sizeToFit];
             ((DVTextFieldCell*)cell).textField.leftView = label;
@@ -207,6 +270,47 @@ typedef enum DVPlaceCreationTableViewCellTags {
     return YES;
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    UITableViewCell *cell = (UITableViewCell*)[textField superview];
+    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
+    
+    NSString *key = @"";
+    switch (indexPath.row) {
+        case DVTagName:
+            key = @"name";
+            break;
+        case DVTagAddress:
+            key = @"address";
+            break;
+        case DVTagCity:
+            key = @"city";
+            break;
+        case DVTagCrossStreet:
+            key = @"crossStreet";
+            break;
+        case DVTagPhone:
+            key = @"phone";
+            break;
+        case DVTagPostcode:
+            key = @"zip";
+            break;
+        case DVTagState:
+            key = @"state";
+            break;
+        case DVTagTwitter:
+            key = @"twitter";
+            break;
+        case DVTagCategory:
+            key = @"primaryCategoryId";
+        break;
+    }
+    
+    self.parameters[key] = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    return YES;
+}
+
 #pragma mark - DVFoursquareNearbyViewController Delegate
 
 - (void)controller:(DVFoursquareNearbyViewController *)controller didSelectCategory:(NSDictionary *)category
@@ -216,6 +320,44 @@ typedef enum DVPlaceCreationTableViewCellTags {
     [self.tableView reloadData];
 }
 
+- (NSDictionary *)populateData
+{
+    NSMutableDictionary *parameters = [@{} mutableCopy];
+    [self.parameters enumerateKeysAndObjectsUsingBlock:^(id key, NSString *obj, BOOL *stop) {
+        if (![obj isEqualToString:@""]) {
+            parameters[key] = obj;
+        }
+    }];
+    return parameters;
+}
 
+- (void)addButtonTapped:(id)sender
+{
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"foursquare_access_token"]) {
+        [self createVenue];
+    }
+    else {
+        DVFoursquareAuthViewController *authController = [[DVFoursquareAuthViewController alloc] init];
+        authController.delegate = self;
+        UINavigationController *authNavigationControlle = [[UINavigationController alloc] initWithRootViewController:authController];
+        [self.navigationController presentViewController:authNavigationControlle animated:YES completion:NULL];
+    }
+}
+
+- (void)createVenue
+{
+    //need to pass ll also
+    NSDictionary *parameters = [self populateData];
+    [self.foursquareClient addPlaceWithParameters:parameters onCompletion:^(BOOL success, NSError *error) {
+        if (error) {
+            NSLog(@"%@", error.description);
+        }
+    }];
+}
+
+- (void)controller:(DVFoursquareAuthViewController *)controller didLoginUser:(NSDictionary *)user
+{
+    [self createVenue];
+}
 
 @end

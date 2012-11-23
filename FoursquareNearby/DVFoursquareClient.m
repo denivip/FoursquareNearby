@@ -168,7 +168,13 @@ static NSString *const kBaseURLString = @"https://api.foursquare.com/v2/";
 
 - (void)addPlaceWithParameters:(NSDictionary *)parameters onCompletion:(DVFoursquareClientPostRequestCompletionBlock)completion
 {
-    [self postPath:@"venues/add" parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    NSMutableDictionary *queryParameters = [parameters mutableCopy];
+    
+    queryParameters[@"client_id"] = kCLIENTID;
+    queryParameters[@"client_secret"] = kCLIENTSECRET;
+    queryParameters[@"oauth_token"] = [[NSUserDefaults standardUserDefaults] objectForKey:@"foursquare_access_token"];
+    
+    [self postPath:@"venues/add" parameters:queryParameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
 
         
         

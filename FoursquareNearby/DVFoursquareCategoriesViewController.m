@@ -80,7 +80,7 @@
     cell.textLabel.text = category[@"name"];
     
     if (category[@"icon"]) {
-        cell.imageView.image = [UIImage imageNamed:@"category_placeholder"];
+        cell.imageView.image = [UIImage imageNamed:@"Images.bundle/category_placeholder"];
     }
     
     [[AFImageRequestOperation imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:category[@"icon"]]] success:^(UIImage *image) {
@@ -104,7 +104,7 @@
     
     if ([category[@"categories"] count] != 0) {
         DVFoursquareCategoriesViewController *categoryViewControlle = [[DVFoursquareCategoriesViewController alloc] initWithStyle:UITableViewStyleGrouped];
-        categoryViewControlle.superCategory = self.items[indexPath.row];
+        categoryViewControlle.superCategory = category;
         categoryViewControlle.delegate = self.delegate;
         [self.navigationController pushViewController:categoryViewControlle animated:YES];
     }
@@ -115,6 +115,19 @@
     }
 }
 
+- (void)populateSubCategoriesFromObject:(NSArray *)object
+{
+    [object enumerateObjectsUsingBlock:^(NSDictionary *category, NSUInteger idx, BOOL *stop) {
+        if ([category[@"id"] isEqualToString:self.superCategory[@"id"]]) {
+            self.items = category[@"categories"];
+            *stop = YES;
+        }
+        else if (category[@"categories"] && [category[@"categories"] count] != 0) {
+            [self populateSubCategoriesFromObject:category[@"categories"]];
+        }
+    }];
+}
+
 - (void)refreshData:(id)sender
 {
     self.items = @[];
@@ -123,12 +136,7 @@
 
         if (categories && !error) {
             if (self.superCategory) {
-                [categories enumerateObjectsUsingBlock:^(NSDictionary *category, NSUInteger idx, BOOL *stop) {
-                    if ([category[@"id"] isEqualToString:self.superCategory[@"id"]]) {
-                        self.items = category[@"categories"];
-                        *stop = YES;
-                    }
-                }];
+                [self populateSubCategoriesFromObject:categories];
             }
             else {
                 self.items = categories;

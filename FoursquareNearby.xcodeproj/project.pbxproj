@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0906D4F5165F9E5E00F4DA0B /* poweredByFoursquare_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 0906D4F4165F9E5E00F4DA0B /* poweredByFoursquare_gray.png */; };
 		0906D4F8165FB40A00F4DA0B /* DVFoursquareCreatePlaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0906D4F7165FB40A00F4DA0B /* DVFoursquareCreatePlaceViewController.m */; };
 		0906D508165FB77800F4DA0B /* UIView+FindAndResignFirstResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 0906D507165FB77800F4DA0B /* UIView+FindAndResignFirstResponder.m */; };
 		0906D50F165FBBA000F4DA0B /* DVFoursquareCategoriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0906D50E165FBBA000F4DA0B /* DVFoursquareCategoriesViewController.m */; };
-		0906D513165FC96600F4DA0B /* category_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 0906D511165FC96600F4DA0B /* category_placeholder.png */; };
 		0906D518165FCC6D00F4DA0B /* DVTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0906D515165FCC6D00F4DA0B /* DVTextFieldCell.m */; };
 		0906D519165FCC6D00F4DA0B /* DVTextViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0906D517165FCC6D00F4DA0B /* DVTextViewCell.m */; };
+		0906D520165FD82100F4DA0B /* category_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 0906D51D165FD82100F4DA0B /* category_placeholder.png */; };
+		0906D521165FD82100F4DA0B /* poweredByFoursquare_gray.png in Resources */ = {isa = PBXBuildFile; fileRef = 0906D51E165FD82100F4DA0B /* poweredByFoursquare_gray.png */; };
+		0906D522165FD82100F4DA0B /* poweredByFoursquare_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0906D51F165FD82100F4DA0B /* poweredByFoursquare_gray@2x.png */; };
+		0906D525165FE53200F4DA0B /* DVFoursquareAuthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0906D524165FE53200F4DA0B /* DVFoursquareAuthViewController.m */; };
 		0923F135165F5EAB0025D4A9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0923F134165F5EAB0025D4A9 /* UIKit.framework */; };
 		0923F137165F5EAB0025D4A9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0923F136165F5EAB0025D4A9 /* Foundation.framework */; };
 		0923F139165F5EAB0025D4A9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0923F138165F5EAB0025D4A9 /* CoreGraphics.framework */; };
@@ -34,25 +36,27 @@
 		0923F1E5165F63A60025D4A9 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 0923F1DC165F63A60025D4A9 /* UIImageView+AFNetworking.m */; };
 		0923F1E7165F63D80025D4A9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0923F1E6165F63D80025D4A9 /* SystemConfiguration.framework */; };
 		0923F1E9165F64570025D4A9 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0923F1E8165F64570025D4A9 /* MobileCoreServices.framework */; };
-		099F6FC8165F677400505A4A /* poweredByFoursquare_gray@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 099F6FC7165F677400505A4A /* poweredByFoursquare_gray@2x.png */; };
 		099F6FCD165F67AB00505A4A /* DVFoursquareNearbyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 099F6FCB165F67AB00505A4A /* DVFoursquareNearbyViewController.m */; };
 		099F6FCE165F67AB00505A4A /* DVFoursquareNearbyViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 099F6FCC165F67AB00505A4A /* DVFoursquareNearbyViewController.xib */; };
 		099F6FD5165F86E400505A4A /* DVFoursquareClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 099F6FD4165F86E400505A4A /* DVFoursquareClient.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0906D4F4165F9E5E00F4DA0B /* poweredByFoursquare_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = poweredByFoursquare_gray.png; sourceTree = "<group>"; };
 		0906D4F6165FB40A00F4DA0B /* DVFoursquareCreatePlaceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVFoursquareCreatePlaceViewController.h; sourceTree = "<group>"; };
 		0906D4F7165FB40A00F4DA0B /* DVFoursquareCreatePlaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVFoursquareCreatePlaceViewController.m; sourceTree = "<group>"; };
 		0906D506165FB77800F4DA0B /* UIView+FindAndResignFirstResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+FindAndResignFirstResponder.h"; sourceTree = "<group>"; };
 		0906D507165FB77800F4DA0B /* UIView+FindAndResignFirstResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+FindAndResignFirstResponder.m"; sourceTree = "<group>"; };
 		0906D50D165FBBA000F4DA0B /* DVFoursquareCategoriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVFoursquareCategoriesViewController.h; sourceTree = "<group>"; };
 		0906D50E165FBBA000F4DA0B /* DVFoursquareCategoriesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVFoursquareCategoriesViewController.m; sourceTree = "<group>"; };
-		0906D511165FC96600F4DA0B /* category_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = category_placeholder.png; sourceTree = "<group>"; };
 		0906D514165FCC6D00F4DA0B /* DVTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVTextFieldCell.h; sourceTree = "<group>"; };
 		0906D515165FCC6D00F4DA0B /* DVTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVTextFieldCell.m; sourceTree = "<group>"; };
 		0906D516165FCC6D00F4DA0B /* DVTextViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVTextViewCell.h; sourceTree = "<group>"; };
 		0906D517165FCC6D00F4DA0B /* DVTextViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVTextViewCell.m; sourceTree = "<group>"; };
+		0906D51D165FD82100F4DA0B /* category_placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = category_placeholder.png; sourceTree = "<group>"; };
+		0906D51E165FD82100F4DA0B /* poweredByFoursquare_gray.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = poweredByFoursquare_gray.png; sourceTree = "<group>"; };
+		0906D51F165FD82100F4DA0B /* poweredByFoursquare_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "poweredByFoursquare_gray@2x.png"; sourceTree = "<group>"; };
+		0906D523165FE53200F4DA0B /* DVFoursquareAuthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVFoursquareAuthViewController.h; sourceTree = "<group>"; };
+		0906D524165FE53200F4DA0B /* DVFoursquareAuthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVFoursquareAuthViewController.m; sourceTree = "<group>"; };
 		0923F130165F5EAB0025D4A9 /* FoursquareNearby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoursquareNearby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0923F134165F5EAB0025D4A9 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0923F136165F5EAB0025D4A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -87,7 +91,6 @@
 		0923F1DC165F63A60025D4A9 /* UIImageView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+AFNetworking.m"; sourceTree = "<group>"; };
 		0923F1E6165F63D80025D4A9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		0923F1E8165F64570025D4A9 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
-		099F6FC7165F677400505A4A /* poweredByFoursquare_gray@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "poweredByFoursquare_gray@2x.png"; sourceTree = "<group>"; };
 		099F6FCA165F67AB00505A4A /* DVFoursquareNearbyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVFoursquareNearbyViewController.h; sourceTree = "<group>"; };
 		099F6FCB165F67AB00505A4A /* DVFoursquareNearbyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVFoursquareNearbyViewController.m; sourceTree = "<group>"; };
 		099F6FCC165F67AB00505A4A /* DVFoursquareNearbyViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DVFoursquareNearbyViewController.xib; sourceTree = "<group>"; };
@@ -120,6 +123,16 @@
 				0906D517165FCC6D00F4DA0B /* DVTextViewCell.m */,
 			);
 			name = "Form input cells";
+			sourceTree = "<group>";
+		};
+		0906D51C165FD82100F4DA0B /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				0906D51D165FD82100F4DA0B /* category_placeholder.png */,
+				0906D51E165FD82100F4DA0B /* poweredByFoursquare_gray.png */,
+				0906D51F165FD82100F4DA0B /* poweredByFoursquare_gray@2x.png */,
+			);
+			path = Images;
 			sourceTree = "<group>";
 		};
 		0923F125165F5EAB0025D4A9 = {
@@ -169,6 +182,8 @@
 				0906D50E165FBBA000F4DA0B /* DVFoursquareCategoriesViewController.m */,
 				0906D506165FB77800F4DA0B /* UIView+FindAndResignFirstResponder.h */,
 				0906D507165FB77800F4DA0B /* UIView+FindAndResignFirstResponder.m */,
+				0906D523165FE53200F4DA0B /* DVFoursquareAuthViewController.h */,
+				0906D524165FE53200F4DA0B /* DVFoursquareAuthViewController.m */,
 				0923F13B165F5EAB0025D4A9 /* Supporting Files */,
 			);
 			path = FoursquareNearby;
@@ -177,6 +192,7 @@
 		0923F13B165F5EAB0025D4A9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0906D51C165FD82100F4DA0B /* Images */,
 				0923F13C165F5EAB0025D4A9 /* FoursquareNearby-Info.plist */,
 				0923F13D165F5EAB0025D4A9 /* InfoPlist.strings */,
 				0923F140165F5EAB0025D4A9 /* main.m */,
@@ -184,9 +200,6 @@
 				0923F146165F5EAB0025D4A9 /* Default.png */,
 				0923F148165F5EAB0025D4A9 /* Default@2x.png */,
 				0923F14A165F5EAB0025D4A9 /* Default-568h@2x.png */,
-				0906D4F4165F9E5E00F4DA0B /* poweredByFoursquare_gray.png */,
-				099F6FC7165F677400505A4A /* poweredByFoursquare_gray@2x.png */,
-				0906D511165FC96600F4DA0B /* category_placeholder.png */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -274,10 +287,10 @@
 				0923F147165F5EAB0025D4A9 /* Default.png in Resources */,
 				0923F149165F5EAB0025D4A9 /* Default@2x.png in Resources */,
 				0923F14B165F5EAB0025D4A9 /* Default-568h@2x.png in Resources */,
-				099F6FC8165F677400505A4A /* poweredByFoursquare_gray@2x.png in Resources */,
 				099F6FCE165F67AB00505A4A /* DVFoursquareNearbyViewController.xib in Resources */,
-				0906D4F5165F9E5E00F4DA0B /* poweredByFoursquare_gray.png in Resources */,
-				0906D513165FC96600F4DA0B /* category_placeholder.png in Resources */,
+				0906D520165FD82100F4DA0B /* category_placeholder.png in Resources */,
+				0906D521165FD82100F4DA0B /* poweredByFoursquare_gray.png in Resources */,
+				0906D522165FD82100F4DA0B /* poweredByFoursquare_gray@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,6 +319,7 @@
 				0906D50F165FBBA000F4DA0B /* DVFoursquareCategoriesViewController.m in Sources */,
 				0906D518165FCC6D00F4DA0B /* DVTextFieldCell.m in Sources */,
 				0906D519165FCC6D00F4DA0B /* DVTextViewCell.m in Sources */,
+				0906D525165FE53200F4DA0B /* DVFoursquareAuthViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
