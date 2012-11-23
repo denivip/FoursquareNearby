@@ -9,6 +9,7 @@
 #import "DVFoursquareNearbyViewController.h"
 #import "DVFoursquareCreatePlaceViewController.h"
 #import "UIImageView+AFNetworking.h"
+#import "UIView+FindAndResignFirstResponder.h"
 
 @interface DVFoursquareNearbyViewController () <UISearchDisplayDelegate>
 
@@ -110,10 +111,7 @@
     imageView.frame = CGRectIntegral(imageView.frame);
     [self.tableView setTableFooterView:footerView];
     
-    if (self.searchEnabled) {
-        [self.tableView setTableHeaderView:self.searchDisplayController.searchBar];
-    }
-    else {
+    if (!self.searchEnabled) {
         [self.tableView setTableHeaderView:nil];
     }
 }
@@ -135,6 +133,8 @@
     else {
         [self refreshData:nil];
     }
+    
+    [self.searchDisplayController setActive:NO];
 }
 
 #pragma mark - Table view data source
@@ -203,8 +203,9 @@
     if (tableView == self.searchDisplayController.searchResultsTableView) {
         switch (indexPath.row) {
             case 0: {
-                DVFoursquareCreatePlaceViewController *createPlaceViewControlle = [[DVFoursquareCreatePlaceViewController alloc] initWithStyle:UITableViewStyleGrouped];
-                [self.navigationController pushViewController:createPlaceViewControlle animated:YES];
+                DVFoursquareCreatePlaceViewController *createPlaceViewController = [[DVFoursquareCreatePlaceViewController alloc] initWithStyle:UITableViewStyleGrouped];
+                createPlaceViewController.initialName = self.searchDisplayController.searchBar.text;
+                [self.navigationController pushViewController:createPlaceViewController animated:YES];
             }
                 break;
             case 1: {
@@ -213,9 +214,15 @@
                 foursquareNearbyViewController.searchEnabled = NO;
                 foursquareNearbyViewController.refreshEnabled = NO;
                 foursquareNearbyViewController.title = @"Nearby";
+                foursquareNearbyViewController.delegate = self.delegate;
                 [self.navigationController pushViewController:foursquareNearbyViewController animated:YES];
             }
                 break;
+        }
+    }
+    else {
+        if ([self.delegate respondsToSelector:@selector(controller:didSelectVenue:)]) {
+            [self.delegate controller:self didSelectVenue:self.items[indexPath.row]];
         }
     }
 }

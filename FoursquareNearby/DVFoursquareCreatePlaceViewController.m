@@ -24,7 +24,9 @@ typedef enum DVPlaceCreationTableViewCellTags {
     DVTagsCount
 } DVPlaceCreationTableViewCellTag;
 
-@interface DVFoursquareCreatePlaceViewController () <UITextFieldDelegate>
+@interface DVFoursquareCreatePlaceViewController () <UITextFieldDelegate, DVFoursquareNearbyViewControllerDelegate>
+
+@property (nonatomic, strong) NSDictionary *selectedCategory;
 
 @end
 
@@ -69,15 +71,28 @@ typedef enum DVPlaceCreationTableViewCellTags {
         {
             cell = [[DVTextFieldCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
             cell.textLabel.text = @"Name";
-            break;
+            ((DVTextFieldCell*)cell).textField.text = self.initialName;
+            ((DVTextFieldCell*)cell).textField.placeholder = @"Required";
+            ((DVTextFieldCell*)cell).textField.returnKeyType = UIReturnKeyNext;
+            ((DVTextFieldCell*)cell).textField.delegate = self;
+            
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            
+            return cell;
         }
+            break;
         case DVTagCategory:
         {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:nil];
-            cell.textLabel.text = @"Category";
+            if (self.selectedCategory) {
+                cell.textLabel.text = [NSString stringWithFormat:@"Category: %@", self.selectedCategory[@"name"]];
+            }
+            else {
+                cell.textLabel.text = @"Category";
+            }
+            
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             cell.selectionStyle = UITableViewCellSelectionStyleNone;
-
             return cell;
         }
             break;
@@ -123,6 +138,13 @@ typedef enum DVPlaceCreationTableViewCellTags {
             cell.textLabel.text = @"Twitter";
             ((DVTextFieldCell*)cell).textField.returnKeyType = UIReturnKeyDone;
             ((DVTextFieldCell*)cell).textField.delegate = self;
+            ((DVTextFieldCell*)cell).textField.placeholder = @"Not required";
+            cell.selectionStyle = UITableViewCellSelectionStyleNone;
+            UILabel *label = [[UILabel alloc] init];
+            label.text = @"@";
+            [label sizeToFit];
+            ((DVTextFieldCell*)cell).textField.leftView = label;
+            ((DVTextFieldCell*)cell).textField.leftViewMode = UITextFieldViewModeAlways;
             return cell;
         }
             break;
@@ -130,6 +152,7 @@ typedef enum DVPlaceCreationTableViewCellTags {
     
     ((DVTextFieldCell*)cell).textField.returnKeyType = UIReturnKeyNext;
     ((DVTextFieldCell*)cell).textField.delegate = self;
+    ((DVTextFieldCell*)cell).textField.placeholder = @"Not required";
     
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
@@ -143,7 +166,8 @@ typedef enum DVPlaceCreationTableViewCellTags {
     switch (indexPath.row) {
         case DVTagCategory:
         {
-            DVFoursquareCategoriesViewController *categoriesViewController = [[DVFoursquareCategoriesViewController alloc] init];
+            DVFoursquareCategoriesViewController *categoriesViewController = [[DVFoursquareCategoriesViewController alloc] initWithStyle:UITableViewStyleGrouped];
+            categoriesViewController.delegate = self;
             [self.navigationController pushViewController:categoriesViewController animated:YES];
         }
             break;
@@ -182,5 +206,16 @@ typedef enum DVPlaceCreationTableViewCellTags {
     
     return YES;
 }
+
+#pragma mark - DVFoursquareNearbyViewController Delegate
+
+- (void)controller:(DVFoursquareNearbyViewController *)controller didSelectCategory:(NSDictionary *)category
+{
+    [self.navigationController popToViewController:self animated:YES];
+    self.selectedCategory = category;
+    [self.tableView reloadData];
+}
+
+
 
 @end

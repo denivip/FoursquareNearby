@@ -17,21 +17,9 @@
 
 @implementation DVFoursquareCategoriesViewController
 
-- (id)init
+- (id)initWithStyle:(UITableViewStyle)style
 {
-    self = [super init];
-    if (self) {
-        self.refreshEnabled = NO;
-        self.searchEnabled = NO;
-        
-        self.title = @"Category";
-    }
-    return self;
-}
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super initWithStyle:style];
     if (self) {
         self.refreshEnabled = NO;
         self.searchEnabled = NO;
@@ -45,6 +33,9 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    
+    self.tableView.backgroundColor = [UIColor whiteColor];
+    self.tableView.backgroundView = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -53,11 +44,40 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    if (self.superCategory) {
+        return 2;
+    }
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if (self.superCategory && section == 0) {
+        return 1;
+    }
+    else return self.items.count;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    static NSString *CellIdentifier = @"CategoryCell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+    }
     
-    NSDictionary *category = self.items[indexPath.row];
+    NSDictionary *category;
+
+    if (self.superCategory && indexPath.section == 0) {
+        category = self.superCategory;
+    }
+    else {
+        category = self.items[indexPath.row];
+    }
+    
+    cell.textLabel.text = category[@"name"];
     
     if (category[@"icon"]) {
         cell.imageView.image = [UIImage imageNamed:@"category_placeholder"];
@@ -73,12 +93,25 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.superCategory && indexPath.section == 0) {
+        if ([self.delegate respondsToSelector:@selector(controller:didSelectCategory:)]) {
+            [self.delegate controller:self didSelectCategory:self.superCategory];
+        }
+        return;
+    }
+    
     NSDictionary *category = self.items[indexPath.row];
     
     if ([category[@"categories"] count] != 0) {
-        DVFoursquareCategoriesViewController *categoryViewControlle = [[DVFoursquareCategoriesViewController alloc] init];
-        categoryViewControlle.superCategoryId = self.items[indexPath.row][@"id"];
+        DVFoursquareCategoriesViewController *categoryViewControlle = [[DVFoursquareCategoriesViewController alloc] initWithStyle:UITableViewStyleGrouped];
+        categoryViewControlle.superCategory = self.items[indexPath.row];
+        categoryViewControlle.delegate = self.delegate;
         [self.navigationController pushViewController:categoryViewControlle animated:YES];
+    }
+    else {
+        if ([self.delegate respondsToSelector:@selector(controller:didSelectCategory:)]) {
+            [self.delegate controller:self didSelectCategory:self.items[indexPath.row]];
+        }
     }
 }
 
@@ -89,9 +122,9 @@
     [self.foursquareClient searchCategories:^(NSArray *categories, NSError *error) {
 
         if (categories && !error) {
-            if (self.superCategoryId) {
+            if (self.superCategory) {
                 [categories enumerateObjectsUsingBlock:^(NSDictionary *category, NSUInteger idx, BOOL *stop) {
-                    if ([category[@"id"] isEqualToString:self.superCategoryId]) {
+                    if ([category[@"id"] isEqualToString:self.superCategory[@"id"]]) {
                         self.items = category[@"categories"];
                         *stop = YES;
                     }

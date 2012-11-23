@@ -9,8 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "DVFoursquareClient.h"
 
+@class DVFoursquareNearbyViewController;
+
+@protocol DVFoursquareNearbyViewControllerDelegate <NSObject>
+
+@optional
+- (void)controller:(DVFoursquareNearbyViewController *)controller didSelectVenue:(NSDictionary *)venue;
+- (void)controller:(DVFoursquareNearbyViewController *)controller didSelectCategory:(NSDictionary *)category;
+
+@end
+
 @interface DVFoursquareNearbyViewController : UITableViewController
 
+@property (nonatomic, weak) id<DVFoursquareNearbyViewControllerDelegate> delegate;
 @property (nonatomic, strong, readonly) DVFoursquareClient *foursquareClient;
 
 @property (nonatomic, strong) UIBarButtonItem *activityBarButtonItem;

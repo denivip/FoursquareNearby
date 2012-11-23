@@ -10,6 +10,6 @@
 
 @interface DVFoursquareCategoriesViewController : DVFoursquareNearbyViewController
 
-@property (nonatomic, strong) NSString *superCategoryId;
+@property (nonatomic, strong) NSDictionary *superCategory;
 
 @end
