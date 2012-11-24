@@ -14,6 +14,7 @@
 @property (nonatomic, strong, readonly) DVFoursquareClient *foursquareClient;
 
 @property (nonatomic, copy) NSString *initialName;
+@property (nonatomic) CGPoint location;
 @property (nonatomic, strong) UIButton *addButton;
 
 @end

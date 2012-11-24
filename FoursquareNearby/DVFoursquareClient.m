@@ -96,7 +96,7 @@ static NSString *const kBaseURLString = @"https://api.foursquare.com/v2/";
     NSDictionary *queryParameters = @{
         @"client_id" : kCLIENTID,
         @"client_secret" : kCLIENTSECRET,
-        @"ll" : [self locationStringFromCGPoint:CGPointMake(37, -122)]
+        @"ll" : [self locationStringFromCGPoint:location]
     };
     
     [self getPath:@"venues/search" parameters:queryParameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -147,7 +147,8 @@ static NSString *const kBaseURLString = @"https://api.foursquare.com/v2/";
             @"client_id" : kCLIENTID,
             @"client_secret" : kCLIENTSECRET,
             @"intent" : @"browse",
-            @"ll" : [self locationStringFromCGPoint:CGPointMake(37, -122)],
+            @"query" : query,
+            @"ll" : [self locationStringFromCGPoint:location],
             @"radius" : [NSString stringWithFormat:@"%f",radius]
         };
         

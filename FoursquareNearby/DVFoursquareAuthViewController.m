@@ -17,8 +17,6 @@
 
 @implementation DVFoursquareAuthViewController
 
-@synthesize webView = _webView;
-
 - (id)init
 {
     self = [super initWithNibName:nil bundle:nil];

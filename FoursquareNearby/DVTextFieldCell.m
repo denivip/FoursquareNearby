@@ -23,8 +23,6 @@
     return self;
 }
 
-@synthesize textField = _textField;
-
 - (UITextField *)textField
 {
     if (! _textField) {

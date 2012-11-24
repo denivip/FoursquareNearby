@@ -35,8 +35,6 @@ typedef enum DVPlaceCreationTableViewCellTags {
 
 @implementation DVFoursquareCreatePlaceViewController
 
-@synthesize parameters = _parameters;
-
 - (NSMutableDictionary *)parameters
 {
     if (!_parameters) {
@@ -45,8 +43,6 @@ typedef enum DVPlaceCreationTableViewCellTags {
     return _parameters;
 }
 
-@synthesize foursquareClient = _foursquareClient;
-
 - (DVFoursquareClient *)foursquareClient
 {
     if (!_foursquareClient) {
@@ -54,8 +50,6 @@ typedef enum DVPlaceCreationTableViewCellTags {
     }
     return _foursquareClient;
 }
-
-@synthesize initialName = _initialName;
 
 - (void)setInitialName:(NSString *)initialName
 {
@@ -77,8 +71,6 @@ typedef enum DVPlaceCreationTableViewCellTags {
     }
     return self;
 }
-
-@synthesize addButton = _addButton;
 
 - (UIButton *)addButton
 {

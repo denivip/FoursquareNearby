@@ -11,21 +11,62 @@
 #import "UIImageView+AFNetworking.h"
 #import "UIView+FindAndResignFirstResponder.h"
 
-@interface DVFoursquareNearbyViewController () <UISearchDisplayDelegate>
+@interface DVFoursquareNearbyViewController () <UISearchDisplayDelegate, CLLocationManagerDelegate>
 
 @property (nonatomic, strong) DVFoursquareClient *foursquareClient;
 @property (nonatomic, strong) NSArray *items;
+@property (nonatomic, strong) CLLocation *currentLocation;
 
 @end
 
 @implementation DVFoursquareNearbyViewController
 
-@synthesize items = _venues;
-@synthesize initialSearchQuery = _initialSearchQuery;
-@synthesize searchEnabled = _searchEnabled;
-@synthesize refreshEnabled = _refreshEnabled;
-@synthesize activityBarButtonItem = _activityBarButtonItem;
-@synthesize refreshBarButtonItem = _refreshBarButtonItem;
+- (void)setItems:(NSArray *)items
+{
+    _items = [items sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"location.distance" ascending:YES]]];
+    [self.tableView reloadData];
+}
+
+- (DVFoursquareClientCompletionBlock)searchPlacesCompletionBlock
+{
+    return ^(NSArray* results, NSError *error){
+        if (self.refreshEnabled) {
+            self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
+        }
+        
+        if (results && !error) {
+            self.items = results;
+        }
+        else if (error) {
+            NSLog(@"Error while fetching nearby venues: %@", error.description);
+        }
+    };
+}
+
+@synthesize currentLocation = _currentLocation;
+
+- (CLLocation *)currentLocation
+{
+    if (!_currentLocation) {
+        _currentLocation = self.locationManager.location;
+    }
+    return _currentLocation;
+}
+
+- (void)setCurrentLocation:(CLLocation *)currentLocation
+{
+    _currentLocation = currentLocation;
+    
+    //to prevent many apdates
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(delayedDataRefreshing) object:nil];
+    [self performSelector:@selector(delayedDataRefreshing) withObject:nil afterDelay:0.2];
+}
+
+- (void)delayedDataRefreshing
+{
+    [self.locationManager stopUpdatingLocation];
+    [self refreshData];
+}
 
 - (DVFoursquareClient *)foursquareClient
 {
@@ -33,6 +74,17 @@
         _foursquareClient = [DVFoursquareClient sharedClient];
     }
     return _foursquareClient;
+}
+
+- (CLLocationManager *)locationManager
+{
+    if (!_locationManager) {
+        _locationManager = [[CLLocationManager alloc] init];
+        _locationManager.delegate = self;
+        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+        _locationManager.distanceFilter = 100;
+    }
+    return _locationManager;
 }
 
 - (UIBarButtonItem *)activityBarButtonItem
@@ -50,7 +102,7 @@
 - (UIBarButtonItem *)refreshBarButtonItem
 {
     if (!_refreshBarButtonItem) {
-        _refreshBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshData:)];
+        _refreshBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(refreshButtonTapped:)];
     }
     return _refreshBarButtonItem;
 }
@@ -59,11 +111,7 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        // Custom initialization
-        self.title = @"FoursquareNearby";
-        self.searchEnabled = YES;
-        self.refreshEnabled = YES;
-        _venues = @[];
+        [self setupDefaults];
     }
     return self;
 }
@@ -72,26 +120,24 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Custom initialization
-        self.title = @"FoursquareNearby";
-        self.searchEnabled = YES;
-        self.refreshEnabled = YES;
-        _venues = @[];
+        [self setupDefaults];
     }
     return self;
 }
 
-- (void)setItems:(NSArray *)venues
+- (void)setupDefaults
 {
-    _venues = venues;
-
-    [self.tableView reloadData];
+    self.title = @"FoursquareNearby";
+    self.searchEnabled = YES;
+    self.refreshEnabled = YES;
+    _items = @[];
+    _searchRadius = 1000;
 }
 
 - (void)setInitialSearchQuery:(NSString *)initialSearchQuery
 {
     _initialSearchQuery = [initialSearchQuery copy];
-    
+    self.title = [NSString stringWithFormat:@"Search \"%@\"", _initialSearchQuery];
 }
 
 - (void)viewDidLoad
@@ -126,15 +172,19 @@
 {
     [super viewWillAppear:animated];
     
-    if (self.initialSearchQuery &&
-        ![self.initialSearchQuery isEqual:@""]) {
-        [self refreshDataWithQuery:self.initialSearchQuery];
+    [self refreshButtonTapped:nil];
+}
+
+- (NSString *)distanceStringFromValue:(NSNumber *)value
+{
+    NSUInteger km = value.integerValue / 1000;
+    NSUInteger m = value.integerValue % 1000;
+    if (km) {
+        return [NSString stringWithFormat:@"%i км. %i м.", km, m];
     }
     else {
-        [self refreshData:nil];
+        return [NSString stringWithFormat:@"%i м.", m];
     }
-    
-    [self.searchDisplayController setActive:NO];
 }
 
 #pragma mark - Table view data source
@@ -145,7 +195,7 @@
         return 2;
     }
     else {
-        return self.items.count;
+        return MAX(1, self.items.count);
     }
 }
 
@@ -172,27 +222,50 @@
         return cell;
     }
     else {
-        static NSString *CellIdentifier = @"VenueCell";
-        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        if (self.items.count) {
+            static NSString *CellIdentifier = @"VenueCell";
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+            if (cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+            }
+            
+            NSDictionary *venue = self.items[indexPath.row];
+            
+            cell.textLabel.text = venue[@"name"];
+            
+            NSString *detailString;
+            NSNumber *distance = venue[@"location"][@"distance"];
+            
+            if (distance) detailString = [self distanceStringFromValue:distance];
+            
+            NSString *address = venue[@"location"][@"address"];
+            if (address) {
+                if (detailString) {
+                    detailString = [detailString stringByAppendingString:@" - "];
+                }
+                detailString = [detailString stringByAppendingString:address];
+            }
+            
+            cell.detailTextLabel.text = detailString;
+            
+            if ([venue[@"categories"] lastObject][@"icon"]) {
+                cell.imageView.image = [UIImage imageNamed:@"category_placeholder"];
+            }
+            
+            [[AFImageRequestOperation imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[venue[@"categories"] lastObject][@"icon"]]] success:^(UIImage *image) {
+                cell.imageView.image = image;
+                [cell setNeedsLayout];
+            }] start];
+            
+            return cell;
         }
-        
-        NSDictionary *venue = self.items[indexPath.row];
-        
-        cell.textLabel.text = venue[@"name"];
-        cell.detailTextLabel.text = venue[@"location"][@"address"];
-        
-        if ([venue[@"categories"] lastObject][@"icon"]) {
-            cell.imageView.image = [UIImage imageNamed:@"category_placeholder"];
+        else {
+            UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
+            cell.textLabel.text = @"No results";
+            cell.textLabel.textColor = [UIColor grayColor];
+            cell.textLabel.textAlignment = UITextAlignmentCenter;
+            return cell;
         }
-        
-        [[AFImageRequestOperation imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[venue[@"categories"] lastObject][@"icon"]]] success:^(UIImage *image) {
-            cell.imageView.image = image;
-            [cell setNeedsLayout];
-        }] start];
-        
-        return cell;
     }
 }
 
@@ -205,6 +278,7 @@
             case 0: {
                 DVFoursquareCreatePlaceViewController *createPlaceViewController = [[DVFoursquareCreatePlaceViewController alloc] initWithStyle:UITableViewStyleGrouped];
                 createPlaceViewController.initialName = self.searchDisplayController.searchBar.text;
+                createPlaceViewController.location = CLLocationToCGPoint(self.currentLocation);
                 [self.navigationController pushViewController:createPlaceViewController animated:YES];
             }
                 break;
@@ -213,7 +287,6 @@
                 foursquareNearbyViewController.initialSearchQuery = self.searchDisplayController.searchBar.text;
                 foursquareNearbyViewController.searchEnabled = NO;
                 foursquareNearbyViewController.refreshEnabled = NO;
-                foursquareNearbyViewController.title = @"Nearby";
                 foursquareNearbyViewController.delegate = self.delegate;
                 [self.navigationController pushViewController:foursquareNearbyViewController animated:YES];
             }
@@ -227,61 +300,43 @@
     }
 }
 
-- (void)refreshData:(id)sender
+#pragma mark -
+
+- (void)refreshButtonTapped:(id)sender
 {
-    if (self.initialSearchQuery) {
+    if (![CLLocationManager locationServicesEnabled]) {
+        return;
+    }
+    
+    if (self.refreshEnabled) {
+        self.navigationItem.rightBarButtonItem = self.activityBarButtonItem;
+    }
+
+    [self.locationManager startUpdatingLocation];
+}
+
+- (void)refreshData
+{
+    if (self.initialSearchQuery &&
+        ![self.initialSearchQuery isEqual:@""]) {
         [self refreshDataWithQuery:self.initialSearchQuery];
         return;
     }
     
     self.items = @[];
     
-    if (self.refreshEnabled) {
-        self.navigationItem.rightBarButtonItem = self.activityBarButtonItem;
-    }
-    
-    [self.foursquareClient nearbyPlacesForLocation:CGPointZero
-                                      onCompletion:^(NSArray *venues, NSError *error) {
-        
-        if (self.refreshEnabled) {
-            self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
-        }
-
-        if (venues && !error) {
-            self.items = venues;
-        }
-        else if (error) {
-            NSLog(@"Error while fetching nearby venues: %@", error.description);
-        }
-        
-    }];
+    [self.foursquareClient nearbyPlacesForLocation:CLLocationToCGPoint(self.currentLocation)
+                                      onCompletion:[self searchPlacesCompletionBlock]];
 }
 
 - (void)refreshDataWithQuery:(NSString *)query
 {
     self.items = @[];
     
-    if (self.refreshEnabled) {
-        self.navigationItem.rightBarButtonItem = self.activityBarButtonItem;
-    }
-    
     [self.foursquareClient searchPlacesWithQuery:query
-                                        location:CGPointZero
-                                          radius:0.0f
-                                    onCompletion:^(NSArray *venues, NSError *error) {
-                                                   
-                                           if (self.refreshEnabled) {
-                                               self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
-                                           }
-                                           
-                                           if (venues && !error) {
-                                               self.items = venues;
-                                           }
-                                           else if (error) {
-                                               NSLog(@"Error while fetching nearby venues: %@", error.description);
-                                           }
-
-                                       }];
+                                        location:CLLocationToCGPoint(self.currentLocation)
+                                          radius:self.searchRadius
+                                    onCompletion:[self searchPlacesCompletionBlock]];
 }
 
 - (void)viewDidUnload {
@@ -298,5 +353,19 @@
 {
     return YES;
 }
+
+#pragma mark - CLLocationManager Delegate
+
+- (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
+{
+    self.searchPlacesCompletionBlock(nil, error);
+    [self.locationManager stopUpdatingLocation];
+}
+
+-(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
+{
+    self.currentLocation = newLocation;
+}
+
 
 @end

@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "DVFoursquareClient.h"
+#import <CoreLocation/CoreLocation.h>
+
+#define CLLocationToCGPoint(location) CGPointMake(location.coordinate.latitude, location.coordinate.longitude)
 
 @class DVFoursquareNearbyViewController;
 
@@ -30,7 +33,10 @@
 @property (nonatomic, copy) NSString *initialSearchQuery;
 @property (nonatomic) BOOL searchEnabled;
 @property (nonatomic) BOOL refreshEnabled;
+@property (nonatomic) CGFloat searchRadius;
 
 @property (nonatomic, strong, readonly) NSArray *items;
+@property (nonatomic, strong) CLLocationManager *locationManager;
+@property (nonatomic, strong, readonly) CLLocation *currentLocation;
 
 @end
