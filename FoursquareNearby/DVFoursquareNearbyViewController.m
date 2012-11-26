@@ -11,7 +11,7 @@
 #import "UIImageView+AFNetworking.h"
 #import "UIView+FindAndResignFirstResponder.h"
 
-@interface DVFoursquareNearbyViewController () <UISearchDisplayDelegate, CLLocationManagerDelegate>
+@interface DVFoursquareNearbyViewController ()
 
 @property (nonatomic, strong) DVFoursquareClient *foursquareClient;
 @property (nonatomic, strong) NSArray *items;
@@ -32,6 +32,9 @@
     return ^(NSArray* results, NSError *error){
         if (self.refreshEnabled) {
             self.navigationItem.rightBarButtonItem = self.refreshBarButtonItem;
+        }
+        else {
+            self.navigationItem.rightBarButtonItem = nil;
         }
         
         if (results && !error) {
@@ -78,7 +81,7 @@
 
 - (CLLocationManager *)locationManager
 {
-    if (!_locationManager) {
+    if (!_locationManager && self.needUpdateOnLocationChange) {
         _locationManager = [[CLLocationManager alloc] init];
         _locationManager.delegate = self;
         _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
@@ -130,6 +133,7 @@
     self.title = @"FoursquareNearby";
     self.searchEnabled = YES;
     self.refreshEnabled = YES;
+    self.needUpdateOnLocationChange = YES;
     _items = @[];
     _searchRadius = 1000;
 }
@@ -248,15 +252,6 @@
             
             cell.detailTextLabel.text = detailString;
             
-            if ([venue[@"categories"] lastObject][@"icon"]) {
-                cell.imageView.image = [UIImage imageNamed:@"category_placeholder"];
-            }
-            
-            [[AFImageRequestOperation imageRequestOperationWithRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:[venue[@"categories"] lastObject][@"icon"]]] success:^(UIImage *image) {
-                cell.imageView.image = image;
-                [cell setNeedsLayout];
-            }] start];
-            
             return cell;
         }
         else {
@@ -277,8 +272,9 @@
         switch (indexPath.row) {
             case 0: {
                 DVFoursquareCreatePlaceViewController *createPlaceViewController = [[DVFoursquareCreatePlaceViewController alloc] initWithStyle:UITableViewStyleGrouped];
-                createPlaceViewController.initialName = self.searchDisplayController.searchBar.text;
+                createPlaceViewController.name = self.searchDisplayController.searchBar.text;
                 createPlaceViewController.location = CLLocationToCGPoint(self.currentLocation);
+                createPlaceViewController.delegate = self;
                 [self.navigationController pushViewController:createPlaceViewController animated:YES];
             }
                 break;
@@ -304,15 +300,18 @@
 
 - (void)refreshButtonTapped:(id)sender
 {
-    if (![CLLocationManager locationServicesEnabled]) {
+    if (![CLLocationManager locationServicesEnabled] && self.needUpdateOnLocationChange) {
         return;
     }
     
-    if (self.refreshEnabled) {
-        self.navigationItem.rightBarButtonItem = self.activityBarButtonItem;
-    }
+    self.navigationItem.rightBarButtonItem = self.activityBarButtonItem;
 
-    [self.locationManager startUpdatingLocation];
+    if (self.needUpdateOnLocationChange) {
+        [self.locationManager startUpdatingLocation];
+    }
+    else {
+        [self refreshData];
+    }
 }
 
 - (void)refreshData
@@ -364,7 +363,9 @@
 
 -(void)locationManager:(CLLocationManager *)manager didUpdateToLocation:(CLLocation *)newLocation fromLocation:(CLLocation *)oldLocation
 {
-    self.currentLocation = newLocation;
+    if (self.needUpdateOnLocationChange) {
+        self.currentLocation = newLocation;
+    }
 }
 
 

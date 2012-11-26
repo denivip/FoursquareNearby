@@ -95,6 +95,9 @@
 		099F6FCC165F67AB00505A4A /* DVFoursquareNearbyViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DVFoursquareNearbyViewController.xib; sourceTree = "<group>"; };
 		099F6FD3165F86E400505A4A /* DVFoursquareClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVFoursquareClient.h; sourceTree = "<group>"; };
 		099F6FD4165F86E400505A4A /* DVFoursquareClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DVFoursquareClient.m; sourceTree = "<group>"; };
+		09F608A51663392F0011B17C /* DVFoursquareNearbyViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVFoursquareNearbyViewControllerDelegate.h; sourceTree = "<group>"; };
+		09F608A71663395D0011B17C /* DVFoursquareCreatePlaceViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVFoursquareCreatePlaceViewControllerDelegate.h; sourceTree = "<group>"; };
+		09F608A8166339D00011B17C /* DVFoursquareAuthViewControllerDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DVFoursquareAuthViewControllerDelegate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,16 +176,19 @@
 				099F6FCA165F67AB00505A4A /* DVFoursquareNearbyViewController.h */,
 				099F6FCB165F67AB00505A4A /* DVFoursquareNearbyViewController.m */,
 				099F6FCC165F67AB00505A4A /* DVFoursquareNearbyViewController.xib */,
+				09F608A51663392F0011B17C /* DVFoursquareNearbyViewControllerDelegate.h */,
 				099F6FD3165F86E400505A4A /* DVFoursquareClient.h */,
 				099F6FD4165F86E400505A4A /* DVFoursquareClient.m */,
 				0906D4F6165FB40A00F4DA0B /* DVFoursquareCreatePlaceViewController.h */,
 				0906D4F7165FB40A00F4DA0B /* DVFoursquareCreatePlaceViewController.m */,
+				09F608A71663395D0011B17C /* DVFoursquareCreatePlaceViewControllerDelegate.h */,
 				0906D50D165FBBA000F4DA0B /* DVFoursquareCategoriesViewController.h */,
 				0906D50E165FBBA000F4DA0B /* DVFoursquareCategoriesViewController.m */,
 				0906D506165FB77800F4DA0B /* UIView+FindAndResignFirstResponder.h */,
 				0906D507165FB77800F4DA0B /* UIView+FindAndResignFirstResponder.m */,
 				0906D523165FE53200F4DA0B /* DVFoursquareAuthViewController.h */,
 				0906D524165FE53200F4DA0B /* DVFoursquareAuthViewController.m */,
+				09F608A8166339D00011B17C /* DVFoursquareAuthViewControllerDelegate.h */,
 				0923F13B165F5EAB0025D4A9 /* Supporting Files */,
 			);
 			path = FoursquareNearby;

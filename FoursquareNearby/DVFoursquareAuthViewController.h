@@ -7,14 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@class DVFoursquareAuthViewController;
-
-@protocol DVFoursquareAuthViewControllerDelegate <NSObject>
-
-- (void)controller:(DVFoursquareAuthViewController *)controller didLoginUser:(NSDictionary *)user;
-
-@end
+#import "DVFoursquareAuthViewControllerDelegate.h"
 
 @interface DVFoursquareAuthViewController : UIViewController
 

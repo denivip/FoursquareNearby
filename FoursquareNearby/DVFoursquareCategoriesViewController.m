@@ -17,12 +17,19 @@
 
 @implementation DVFoursquareCategoriesViewController
 
+- (void)setItems:(NSArray *)items
+{
+    _items = items;
+    [self.tableView reloadData];
+}
+
 - (id)initWithStyle:(UITableViewStyle)style
 {
     self = [super initWithStyle:style];
     if (self) {
         self.refreshEnabled = NO;
         self.searchEnabled = NO;
+        self.needUpdateOnLocationChange = NO;
         
         self.title = @"Category";
     }
@@ -115,32 +122,17 @@
     }
 }
 
-- (void)populateSubCategoriesFromObject:(NSArray *)object
-{
-    [object enumerateObjectsUsingBlock:^(NSDictionary *category, NSUInteger idx, BOOL *stop) {
-        if ([category[@"id"] isEqualToString:self.superCategory[@"id"]]) {
-            self.items = category[@"categories"];
-            *stop = YES;
-        }
-        else if (category[@"categories"] && [category[@"categories"] count] != 0) {
-            [self populateSubCategoriesFromObject:category[@"categories"]];
-        }
-    }];
-}
-
-- (void)refreshData:(id)sender
+- (void)refreshData
 {
     self.items = @[];
     
-    [self.foursquareClient searchCategories:^(NSArray *categories, NSError *error) {
+    [self.foursquareClient searchCategoriesWithSuperCategory:self.superCategory
+                                                onCompletion:^(NSArray *categories, NSError *error) {
 
+        self.navigationItem.rightBarButtonItem = nil;
+        
         if (categories && !error) {
-            if (self.superCategory) {
-                [self populateSubCategoriesFromObject:categories];
-            }
-            else {
-                self.items = categories;
-            }
+            self.items = categories;
         }
         else if (error) {
             NSLog(@"Error while fetching categories: %@", error.description);

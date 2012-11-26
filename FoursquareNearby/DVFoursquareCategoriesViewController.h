@@ -8,6 +8,8 @@
 
 #import "DVFoursquareNearbyViewController.h"
 
+/** A subclass of DVFoursquareNearbyViewController that manages iterface for selecting categories or subcategories.
+ */
 @interface DVFoursquareCategoriesViewController : DVFoursquareNearbyViewController
 
 @property (nonatomic, strong) NSDictionary *superCategory;

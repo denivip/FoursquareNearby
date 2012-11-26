@@ -9,7 +9,7 @@
 #import "AFHTTPClient.h"
 
 typedef void (^DVFoursquareClientCompletionBlock)(NSArray* results, NSError *error);
-typedef void (^DVFoursquareClientPostRequestCompletionBlock)(BOOL success, NSError *error);
+typedef void (^DVFoursquareClientPostRequestCompletionBlock)(BOOL success, id responseObject, NSError *error);
 
 #define kCLIENTID @"Your Foursquare Client ID"
 #define kCLIENTSECRET @"Your Foursquare Client Secret"
@@ -33,5 +33,8 @@ typedef void (^DVFoursquareClientPostRequestCompletionBlock)(BOOL success, NSErr
                   onCompletion:(DVFoursquareClientPostRequestCompletionBlock)completion;
 
 - (void)searchCategories:(DVFoursquareClientCompletionBlock)completion;
+
+- (void)searchCategoriesWithSuperCategory:(NSDictionary *)category
+                             onCompletion:(DVFoursquareClientCompletionBlock)completion;
 
 @end
